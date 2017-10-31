@@ -1,0 +1,5 @@
+172.17.0.3 -> database1 
+172.17.0.6 -> database2
+172.17.0.2 -> centos-ssh1
+172.17.0.4 -> centos-ssh2
+172.17.0.5 -> centos-ssh3

@@ -1,0 +1,43 @@
+FROM centos:latest
+
+MAINTAINER 2nd division commander <2nd.div.commander>
+LABEL Vendor="CentOS"
+LABEL License=GPLv2
+LABEL Version=5.5.41
+
+LABEL Build docker build --rm --tag centos/centosSSHnyobi .
+
+RUN yum -y install openssh-server
+RUN mkdir /var/run/sshd
+RUN echo 'root:screencast' | chpasswd
+RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+
+# SSH login fix. Otherwise user is kicked off after login
+RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
+ENV NOTVISIBLE "in users profile"
+RUN echo "export VISIBLE=now" >> /etc/profile
+#RUN yum -y install --setopt=tsflags=nodocs epel-release && \ 
+#    yum -y install --setopt=tsflags=nodocs mariadb-server bind-utils pwgen psmisc hostname && \ 
+#    yum -y erase vim-minimal && \
+#    yum -y update && yum clean all
+
+
+# Fix permissions to allow for running on openshift
+#COPY fix-permissions.sh ./
+#RUN ./fix-permissions.sh /var/lib/mysql/   && \
+#    ./fix-permissions.sh /var/log/mariadb/ && \
+#    ./fix-permissions.sh /var/run/
+
+#COPY docker-entrypoint.sh /
+
+#ENTRYPOINT ["/docker-entrypoint.sh"]
+
+# Place VOLUME statement below all changes to /var/lib/mysql
+#VOLUME /var/lib/mysql
+
+# By default will run as random user on openshift and the mysql user (27)
+# everywhere else
+#USER 27
+
+EXPOSE 22
+CMD ["/usr/sbin/sshd","-D"]

@@ -1,0 +1,6 @@
+docker run -d -p 22 centos7-ssh:1
+# ssh -p $PORT nyobi@localhost
+## install sudo and add sudoers to user nyobi
+## latest build centos7-ssh:5
+docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' container_name 
+'docker run -d -p 22 --rm --name centos7-ssh{1-3} centos7-ssh:5'
